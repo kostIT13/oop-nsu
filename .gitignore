@@ -1,17 +1,48 @@
-# Visual Studio
+# ===== Visual Studio =====
 .vs/
 *.vsidx
 *.slnx
+*.vcxproj
+*.vcxproj.*
+*.user
+*.suo
 
-# Скомпилированные файлы
+# ===== Папки сборки =====
+x64/
+x86/
+Debug/
+Release/
+Debug/
+Bin/
+obj/
+
+# ===== Скомпилированные файлы =====
 *.exe
-*.o
+*.dll
+*.lib
+*.pdb
 *.obj
+*.o
+*.ilk
+*.exp
+*.idb
+*.iobj
+*.ipdb
+
+# ===== Твои собранные программы =====
 program
 program.exe
 
-# Прочее
-Debug/
-Release/
-x64/
-x86/
+# ===== Кэш и временные =====
+*.tmp
+*.log
+*.cache
+
+# ===== IDE / редакторы =====
+.vscode/
+.idea/
+
+# ===== ОС =====
+Thumbs.db
+Desktop.ini
+.DS_Store
