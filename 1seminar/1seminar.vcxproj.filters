@@ -34,8 +34,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include=".gitignore">
-      <Filter>Исходные файлы</Filter>
-    </None>
+    <None Include=".gitignore" />
   </ItemGroup>
 </Project>
