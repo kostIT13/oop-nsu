@@ -1,0 +1,17 @@
+# Visual Studio
+.vs/
+*.vsidx
+*.slnx
+
+# Скомпилированные файлы
+*.exe
+*.o
+*.obj
+program
+program.exe
+
+# Прочее
+Debug/
+Release/
+x64/
+x86/
