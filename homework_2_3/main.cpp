@@ -8,8 +8,8 @@ int main() {
     std::cin >> a;
     std::cin >> b;
 
-    std::cout << res_average<int>(a,b) << '\n';
-    std::cout << res_mode_average<int>(a,b);
+    std::cout << res_average<int, double>(a,b) << '\n';
+    std::cout << res_mode_average<int, double>(a,b);
     
     return 0;
 }

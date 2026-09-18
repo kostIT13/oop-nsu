@@ -1,4 +1,4 @@
-#include "average.h"
+#pragma once
 
 template <typename T, int p = 2>
 T average(T a, T b) {
