@@ -1,6 +1,7 @@
 #pragma once
 
-namespace Average {
-	int average(int a, int b);
-	double average(double a, double b);
+template <typename T>
+T average(T a, T b) {
+    T sum = a + b;
+    return sum / 2;   
 }
