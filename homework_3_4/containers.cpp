@@ -37,7 +37,6 @@ int main() {
     std::mt19937 gen(std::random_device{}());
     std::uniform_int_distribution<T1> dist(-N, N);
 
-    // Постоянный второй аргумент
     T1 secondArg = dist(gen);
     std::cout << "Постоянный второй аргумент: " << secondArg << "\n\n";
 
