@@ -29,13 +29,13 @@ R mode_average(const T& a, const T& b) {
 }
 
 int main() {
-    constexpr std::size_t M = 8;    // длина контейнеров
-    constexpr int N = 50;           // диапазон [-N, N]
-    using T1 = int;                 // тип входных элементов
-    using T2 = double;              // тип результата
+    constexpr std::size_t M = 14;   // длина контейнеров
+    constexpr int N = 2;            // диапазон [-N, N]
+    using T1 = double;              // тип входных элементов
+    using T2 = int;                 // тип результата
 
     std::mt19937 gen(std::random_device{}());
-    std::uniform_int_distribution<T1> dist(-N, N);
+    std::uniform_real_distribution<T1> dist(-N, N);
 
     T1 secondArg = dist(gen);
     std::cout << "Постоянный второй аргумент: " << secondArg << "\n\n";
@@ -78,10 +78,10 @@ int main() {
 
     using RowPair = std::pair<const std::vector<T1>*, const std::vector<T2>*>;
     std::vector<std::pair<std::string, RowPair>> table = {
-        {"array<int>",  {&arrVec,     &vecRes    }},
-        {"vector<int>", {&vec,        &listResVec}},
-        {"list<int>",   {&lstVec,     &deqResVec }},
-        {"deque<int>",  {&deqVec,     &vecRes2   }}
+        {"array<double>",  {&arrVec,     &vecRes    }},
+        {"vector<double>", {&vec,        &listResVec}},
+        {"list<double>",   {&lstVec,     &deqResVec }},
+        {"deque<double>",  {&deqVec,     &vecRes2   }}
     };
 
     std::vector<std::string> rows;
@@ -89,11 +89,11 @@ int main() {
         std::ostringstream oss;
         oss << "| " << entry.first << " ";
         for (std::size_t i = 0; i < M; ++i)
-            oss << "| " << (*entry.second.first)[i] << " ";
+            oss << "| " << std::fixed << std::setprecision(2)
+                << (*entry.second.first)[i] << " ";
         oss << "| ";
         for (std::size_t i = 0; i < M; ++i)
-            oss << "| " << std::fixed << std::setprecision(2)
-                << (*entry.second.second)[i] << " ";
+            oss << "| " << (*entry.second.second)[i] << " ";
         oss << "|";
         rows.push_back(oss.str());
     }
