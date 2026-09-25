@@ -3,153 +3,120 @@
 #include <iomanip>
 #include <string>
 #include <vector>
+#include <array>
 #include <list>
 #include <deque>
-#include <array>
 #include <random>
-#include <cmath>
 #include <sstream>
+#include <utility>
 
-constexpr int M = 14;       
-constexpr int N = 2;        
-using T1 = double;        
-using T2 = int;             
-
-std::mt19937 rng(std::random_device{}());
-
-T1 randomT1() {
-    std::uniform_real_distribution<double> dist(-static_cast<double>(N),
-                                                 static_cast<double>(N));
-    return dist(rng);
+template <typename R, typename T>
+R average(T a, T b) {
+    R ra = static_cast<R>(a);
+    R rb = static_cast<R>(b);
+    return (ra + rb) / static_cast<R>(2);
 }
 
-T2 extendedFunction(T1 x, T1 k) {
-    double result = x * k + std::abs(x);
-    return static_cast<T2>(std::round(result));
-}
-
-std::string makeRow(const std::vector<std::string>& cells) {
-    std::ostringstream oss;
-    oss << "|";
-    for (const auto& c : cells) {
-        oss << " " << c << " |";
-    }
-    return oss.str();
-}
-
-std::string fmt(T1 v) {
-    std::ostringstream s;
-    s << std::fixed << std::setprecision(3) << v;
-    return s.str();
+template <typename R, typename T>
+R mode_average(const T& a, const T& b) {
+    static std::mt19937 gen(std::random_device{}());
+    R ra = static_cast<R>(a);
+    R rb = static_cast<R>(b);
+    R result = (ra + rb) / static_cast<R>(2);
+    if (std::bernoulli_distribution(0.5)(gen))
+        result += static_cast<R>(std::uniform_int_distribution<int>(-10, 10)(gen));
+    return result;
 }
 
 int main() {
-    std::cout << "=== Лабораторная работа: контейнеры и циклы ===\n";
-    std::cout << "T1=double, T2=int, M=" << M << ", N=" << N << "\n\n";
+    constexpr std::size_t M = 8;    // длина контейнеров
+    constexpr int N = 50;           // диапазон [-N, N]
+    using T1 = int;                 // тип входных элементов
+    using T2 = double;              // тип результата
 
-    T1 k = randomT1();
-    std::cout << "Случайный параметр k = " << fmt(k) << "\n\n";
+    std::mt19937 gen(std::random_device{}());
+    std::uniform_int_distribution<T1> dist(-N, N);
 
-    std::array<T1, M> arr{};
+    // Постоянный второй аргумент
+    T1 secondArg = dist(gen);
+    std::cout << "Постоянный второй аргумент: " << secondArg << "\n\n";
+
+    std::array<T1, M> arr;
     std::vector<T1> vec(M);
-    std::list<T1> lst(M);
-    std::deque<T1> deq(M);
+    std::list<T1> lst;
+    std::deque<T1> deq;
 
-    for (size_t i = 0; i < M; ++i) {
-        arr[i] = randomT1();
+    for (std::size_t i = 0; i < M; ++i) {
+        T1 v = dist(gen);
+        arr[i] = v;
+        vec[i] = v;
+        lst.push_back(v);
+        deq.push_back(v);
     }
 
-    for (auto it = vec.begin(); it != vec.end(); ++it) {
-        *it = randomT1();
-    }
+    std::vector<T2> vecRes(M);   // из array  -> vector
+    std::list<T2>   listRes;     // из vector -> list
+    std::deque<T2>  deqRes;      // из list   -> deque
+    std::vector<T2> vecRes2;     // из deque  -> vector
 
-    for (auto& v : lst) {
-        v = randomT1();
-    }
+    for (std::size_t i = 0; i < arr.size(); ++i)
+        vecRes[i] = mode_average<T2>(arr[i], secondArg);
 
-    for (size_t i = 0; i < M; ++i) {
-        deq[i] = randomT1();
-    }
+    for (auto it = vec.begin(); it != vec.end(); ++it)
+        listRes.push_back(mode_average<T2>(*it, secondArg));
 
-    std::vector<T2> arrResult;
-    for (const auto& v : arr) {
-        arrResult.push_back(extendedFunction(v, k));
-    }
+    for (const auto& x : lst)
+        deqRes.push_back(mode_average<T2>(x, secondArg));
 
-    std::list<T2> vecResult;
-    for (const auto& v : vec) {
-        vecResult.push_back(extendedFunction(v, k));
-    }
+    for (const auto& x : deq)
+        vecRes2.push_back(mode_average<T2>(x, secondArg));
 
-    std::deque<T2> lstResult;
-    for (auto it = lst.begin(); it != lst.end(); ++it) {
-        lstResult.push_back(extendedFunction(*it, k));
-    }
+    std::vector<T1> arrVec(arr.begin(), arr.end());
+    std::vector<T1> lstVec(lst.begin(), lst.end());
+    std::vector<T1> deqVec(deq.begin(), deq.end());
+    std::vector<T2> listResVec(listRes.begin(), listRes.end());
+    std::vector<T2> deqResVec(deqRes.begin(), deqRes.end());
 
-    std::vector<T2> deqResult;
-    for (size_t i = 0; i < M; ++i) {
-        deqResult.push_back(extendedFunction(deq[i], k));
-    }
+    using RowPair = std::pair<const std::vector<T1>*, const std::vector<T2>*>;
+    std::vector<std::pair<std::string, RowPair>> table = {
+        {"array<int>",  {&arrVec,     &vecRes    }},
+        {"vector<int>", {&vec,        &listResVec}},
+        {"list<int>",   {&lstVec,     &deqResVec }},
+        {"deque<int>",  {&deqVec,     &vecRes2   }}
+    };
 
     std::vector<std::string> rows;
-
-    auto itArr  = arr.begin();
-    auto itVec  = vec.begin();
-    auto itLst  = lst.begin();
-    auto itDeq  = deq.begin();
-
-    auto itArrR = arrResult.begin();
-    auto itVecR = vecResult.begin();
-    auto itLstR = lstResult.begin();
-    auto itDeqR = deqResult.begin();
-
-    for (int i = 0; i < M; ++i) {
-        std::vector<std::string> cells;
-        cells.push_back(std::to_string(i));
-
-        cells.push_back(fmt(*itArr));
-        cells.push_back(fmt(*itVec));
-        cells.push_back(fmt(*itLst));
-        cells.push_back(fmt(*itDeq));
-
-        cells.push_back(std::to_string(*itArrR));
-        cells.push_back(std::to_string(*itVecR));
-        cells.push_back(std::to_string(*itLstR));
-        cells.push_back(std::to_string(*itDeqR));
-
-        rows.push_back(makeRow(cells));
-
-        ++itArr; ++itVec; ++itLst; ++itDeq;
-        ++itArrR; ++itVecR; ++itLstR; ++itDeqR;
+    for (const auto& entry : table) {
+        std::ostringstream oss;
+        oss << "| " << entry.first << " ";
+        for (std::size_t i = 0; i < M; ++i)
+            oss << "| " << (*entry.second.first)[i] << " ";
+        oss << "| ";
+        for (std::size_t i = 0; i < M; ++i)
+            oss << "| " << std::fixed << std::setprecision(2)
+                << (*entry.second.second)[i] << " ";
+        oss << "|";
+        rows.push_back(oss.str());
     }
 
-    std::ostringstream md;
-    md << "# Результаты лабораторной работы\n\n";
-    md << "**Параметры:** T1=double, T2=int, M=" << M
-       << ", N=" << N << ", k=" << fmt(k) << "\n\n";
+    std::ofstream fout("table.md");
+    if (!fout) { std::cerr << "Не удалось открыть файл\n"; return 1; }
 
-    md << "| # | array (T1) | vector (T1) | list (T1) | deque (T1) "
-       << "| array->vector (T2) | vector->list (T2) | list->deque (T2) | deque->vector (T2) |\n";
+    fout << "| Контейнер ";
+    for (std::size_t i = 0; i < M; ++i) fout << "| T1[" << i << "] ";
+    fout << "| ";
+    for (std::size_t i = 0; i < M; ++i) fout << "| T2[" << i << "] ";
+    fout << "|\n";
 
-    md << "|---|------------|-------------|-----------|------------|"
-          "--------------------|-------------------|-------------------|---------------------|\n";
+    fout << "|---";
+    for (std::size_t i = 0; i < M; ++i) fout << "|---";
+    fout << "|---";
+    for (std::size_t i = 0; i < M; ++i) fout << "|---";
+    fout << "|\n";
 
-    for (const auto& r : rows) {
-        md << r << "\n";
-    }
+    for (const auto& r : rows) fout << r << "\n";
 
-    const std::string filename = "result.md";
-    std::ofstream out(filename);
-    if (!out) {
-        std::cerr << "Не удалось открыть файл " << filename << "\n";
-        return 1;
-    }
-    out << md.str();
-    out.close();
-
-    std::cout << "Таблица записана в файл: " << filename << "\n\n";
-    std::cout << "=== Содержимое md-файла ===\n";
-    std::cout << md.str();
-
+    fout.close();
+    std::cout << "Таблица записана в table.md\n";
     return 0;
 }
