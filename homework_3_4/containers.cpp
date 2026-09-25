@@ -31,14 +31,14 @@ R mode_average(const T& a, const T& b) {
 int main() {
     constexpr std::size_t M = 14;   // длина контейнеров
     constexpr int N = 2;            // диапазон [-N, N]
-    using T1 = double;              // тип входных элементов
-    using T2 = int;                 // тип результата
+    typedef double T1;              // тип входных элементов
+    typedef int    T2;              // тип результата
 
     std::mt19937 gen(std::random_device{}());
     std::uniform_real_distribution<T1> dist(-N, N);
 
     T1 secondArg = dist(gen);
-    std::cout << "Постоянный второй аргумент: " << secondArg << "\n\n";
+    std::cout << secondArg << "\n\n";
 
     std::array<T1, M> arr;
     std::vector<T1> vec(M);
@@ -61,14 +61,29 @@ int main() {
     for (std::size_t i = 0; i < arr.size(); ++i)
         vecRes[i] = mode_average<T2>(arr[i], secondArg);
 
-    for (auto it = vec.begin(); it != vec.end(); ++it)
-        listRes.push_back(mode_average<T2>(*it, secondArg));
+    std::vector<T1>::iterator itVec;
+    for (itVec = vec.begin(); itVec != vec.end(); ++itVec)
+        listRes.push_back(mode_average<T2>(*itVec, secondArg));
 
-    for (const auto& x : lst)
+    for (const T1& x : lst)
         deqRes.push_back(mode_average<T2>(x, secondArg));
 
-    for (const auto& x : deq)
+    for (const T1& x : deq)
         vecRes2.push_back(mode_average<T2>(x, secondArg));
+
+    std::list<T2>::iterator itList = listRes.begin();
+    std::list<T2>::iterator itLast = listRes.begin();
+
+    for (; itList != listRes.end(); ++itList)
+        itLast = itList;   
+
+    std::cout << "last value " << *itLast << "\n\n";
+
+    std::cout << "listRes: ";  
+    std::list<T2>::iterator itPrint;
+    for (itPrint = listRes.begin(); itPrint != listRes.end(); ++itPrint)
+        std::cout << *itPrint << " ";
+    std::cout << "\n";
 
     std::vector<T1> arrVec(arr.begin(), arr.end());
     std::vector<T1> lstVec(lst.begin(), lst.end());
@@ -76,24 +91,24 @@ int main() {
     std::vector<T2> listResVec(listRes.begin(), listRes.end());
     std::vector<T2> deqResVec(deqRes.begin(), deqRes.end());
 
-    using RowPair = std::pair<const std::vector<T1>*, const std::vector<T2>*>;
-    std::vector<std::pair<std::string, RowPair>> table = {
-        {"array<double>",  {&arrVec,     &vecRes    }},
-        {"vector<double>", {&vec,        &listResVec}},
-        {"list<double>",   {&lstVec,     &deqResVec }},
-        {"deque<double>",  {&deqVec,     &vecRes2   }}
-    };
+    typedef std::pair<const std::vector<T1>*, const std::vector<T2>*> RowPair;
+    std::vector<std::pair<std::string, RowPair>> table;
+    table.push_back(std::make_pair(std::string("array<double>"),  RowPair(&arrVec,     &vecRes    )));
+    table.push_back(std::make_pair(std::string("vector<double>"), RowPair(&vec,        &listResVec)));
+    table.push_back(std::make_pair(std::string("list<double>"),   RowPair(&lstVec,     &deqResVec )));
+    table.push_back(std::make_pair(std::string("deque<double>"),  RowPair(&deqVec,     &vecRes2   )));
 
     std::vector<std::string> rows;
-    for (const auto& entry : table) {
+    std::vector<std::pair<std::string, RowPair>>::const_iterator itTable;
+    for (itTable = table.begin(); itTable != table.end(); ++itTable) {
         std::ostringstream oss;
-        oss << "| " << entry.first << " ";
+        oss << "| " << itTable->first << " ";
         for (std::size_t i = 0; i < M; ++i)
             oss << "| " << std::fixed << std::setprecision(2)
-                << (*entry.second.first)[i] << " ";
+                << (*itTable->second.first)[i] << " ";
         oss << "| ";
         for (std::size_t i = 0; i < M; ++i)
-            oss << "| " << (*entry.second.second)[i] << " ";
+            oss << "| " << (*itTable->second.second)[i] << " ";
         oss << "|";
         rows.push_back(oss.str());
     }
@@ -113,9 +128,10 @@ int main() {
     for (std::size_t i = 0; i < M; ++i) fout << "|---";
     fout << "|\n";
 
-    for (const auto& r : rows) fout << r << "\n";
+    std::vector<std::string>::const_iterator itRows;
+    for (itRows = rows.begin(); itRows != rows.end(); ++itRows)
+        fout << *itRows << "\n";
 
     fout.close();
-    std::cout << "Таблица записана в table.md\n";
     return 0;
 }
