@@ -11,18 +11,21 @@ std::vector<int> readFileToVector(const std::string& filename) {
         std::cerr << "Ошибка: не удалось открыть файл " << filename << std::endl;
         return vec;
     }
-    
+
+    // Читаем весь файл в строку
     std::string content((std::istreambuf_iterator<char>(file)),
                          std::istreambuf_iterator<char>());
-    
+
+    // Заменяем запятые на пробелы, чтобы stringstream корректно читал числа
     std::replace(content.begin(), content.end(), ',', ' ');
-    
+
+    // Парсим числа
     std::stringstream ss(content);
     int value;
     while (ss >> value) {
         vec.push_back(value);
     }
-    
+
     return vec;
 }
 
@@ -31,6 +34,6 @@ void printVectorPreview(const std::vector<int>& v, const std::string& name, int 
     for (int i = 0; i < std::min((int)v.size(), n); ++i) {
         std::cout << v[i] << " ";
     }
-    if (v.size() > (size_t)n) std::cout << "...";
+    if ((int)v.size() > n) std::cout << "...";
     std::cout << std::endl;
 }
