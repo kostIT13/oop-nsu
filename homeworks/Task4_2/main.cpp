@@ -26,10 +26,8 @@ int main() {
         vecSmall = vec1;
     }
 
-    // 2. Запуск Задания 4.I
     solveTask4_1(vecLarge, vecSmall);
 
-    // 3. Запуск Задания 4.II
     solveTask4_2(vecLarge, vecSmall);
 
     return 0;

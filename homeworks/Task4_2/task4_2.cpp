@@ -6,9 +6,7 @@
 #include <functional>
 
 void solveTask4_2(const std::vector<int>& vecLarge, const std::vector<int>& vecSmall) {
-    std::cout << "\n==========================================\n";
     std::cout << "             ЗАДАНИЕ 4.II\n";
-    std::cout << "==========================================\n";
 
     // 1. Бинарная операция (умножение) с std::accumulate
     std::cout << "--- Пункт 1: Бинарная операция (умножение) ---\n";

@@ -12,14 +12,11 @@ std::vector<int> readFileToVector(const std::string& filename) {
         return vec;
     }
     
-    // Читаем весь файл как одну строку
     std::string content((std::istreambuf_iterator<char>(file)),
                          std::istreambuf_iterator<char>());
     
-    // Заменяем все запятые на пробелы
     std::replace(content.begin(), content.end(), ',', ' ');
     
-    // Теперь парсим числа из строки
     std::stringstream ss(content);
     int value;
     while (ss >> value) {

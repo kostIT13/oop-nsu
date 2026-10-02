@@ -6,11 +6,8 @@
 #include <map>
 
 void solveTask4_1(const std::vector<int>& vecA, const std::vector<int>& vecB) {
-    std::cout << "\n==========================================\n";
     std::cout << "             ЗАДАНИЕ 4.I\n";
-    std::cout << "==========================================\n";
 
-    // 1. Определение большего и меньшего вектора
     std::vector<int> vecLarge, vecSmall;
     if (vecA.size() >= vecB.size()) {
         vecLarge = vecA;
@@ -24,16 +21,13 @@ void solveTask4_1(const std::vector<int>& vecA, const std::vector<int>& vecB) {
     printVectorPreview(vecSmall, "Второй (меньший) вектор");
     std::cout << std::endl;
 
-    // 2. Подсчет количества чисел
-    std::cout << "--- Пункт 2: Количество чисел ---\n";
+    std::cout << "Пункт 2: Количество чисел\n";
     std::cout << "Размер 1-го вектора: " << vecLarge.size() << std::endl;
     std::cout << "Размер 2-го вектора: " << vecSmall.size() << std::endl;
 
-    // 3. Подсчет частоты встречаемости
     std::cout << "\n--- Пункт 3: Частота встречаемости (топ-5 уникальных) ---\n";
     std::map<int, int> freqLarge, freqSmall;
 
-    // 3a. Способ с циклом for
     for (int x : vecLarge) freqLarge[x]++;
     for (int x : vecSmall) freqSmall[x]++;
 
@@ -44,7 +38,6 @@ void solveTask4_1(const std::vector<int>& vecA, const std::vector<int>& vecB) {
         std::cout << "  Число " << pair.first << ": " << pair.second << " раз\n";
     }
 
-    // 3b. Способ с <algorithm>
     std::vector<int> uniqueLarge = vecLarge;
     std::sort(uniqueLarge.begin(), uniqueLarge.end());
     uniqueLarge.erase(std::unique(uniqueLarge.begin(), uniqueLarge.end()), uniqueLarge.end());
