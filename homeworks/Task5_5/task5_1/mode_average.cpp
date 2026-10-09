@@ -1,0 +1,17 @@
+#include "mode_average.h"
+#include <random>
+
+namespace modified {
+
+    int mode_average(const int& a, const int& b) {
+        static std::mt19937 gen(std::random_device{}());
+
+        int result = (a + b) / 2;
+
+        if (std::bernoulli_distribution(0.5)(gen))
+            result += std::uniform_int_distribution<int>(-10, 10)(gen);
+
+        return result;
+    }
+
+}
