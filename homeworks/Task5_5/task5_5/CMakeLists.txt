@@ -4,7 +4,7 @@ project(oop_hw LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(BUILD_TESTS "Build unit tests with GoogleTest" ON)
+option(BUILD_TESTS "Build unit tests with GoogleTest" ON) # опция 
 
 add_subdirectory(lib)
 

@@ -13,4 +13,4 @@ cmake --build . --config Debug
 ctest --output-on-failure -C Debug
 
 # Тесты — способ 2
-.\Debug\lib_tests.exe
+.\tests\Debug\lib_tests.exe
